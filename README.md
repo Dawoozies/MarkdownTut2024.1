@@ -25,7 +25,7 @@
 
 #### Codeblock
 
-```
+``` csh
     void HandleUpgradeClick(Upgrade upgrade, GameObject upgradeObject)
     {
         if (upgrade.cost <= points && !upgrade.unlocked)
@@ -66,3 +66,5 @@
         }
     }                            
 ```
+
+![It starts with](half-life2-linkin-park.gif)
