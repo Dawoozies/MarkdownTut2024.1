@@ -26,46 +26,13 @@
 #### Codeblock
 
 ``` csh
-    void HandleUpgradeClick(Upgrade upgrade, GameObject upgradeObject)
+    void HandleThem(Child[] childs)
     {
-        if (upgrade.cost <= points && !upgrade.unlocked)
+        foreach(child in childs)
         {
-            upgrade.unlocked = true;
-            points -= upgrade.cost;
-            var image = upgradeObject.GetComponent<Image>();
-            image.color = green;
-            totalScoreTMP.text = $"Total Score: {points}";
-            GameObject blockBuildUI = Instantiate(blockUIPrefab, blockList.transform);
-            image = blockBuildUI.GetComponent<Image>();
-            image.color = upgrade.color;
-            Button[] blockButtons = blockBuildUI.GetComponentsInChildren<Button>();
-            TextMeshProUGUI[] blockTexts = blockBuildUI.GetComponentsInChildren<TextMeshProUGUI>();
-            Button selectBlockButton = blockButtons[0];
-            Button buyBlockButton = blockButtons[1];
-            Block newBlock = new()
-            {
-                name = upgrade.name,
-                prefab = upgrade.prefab,
-                ownedText = blockTexts[0],
-                costText = blockTexts[1],
-                Cost = upgrade.cost,
-                Owned = 0
-            };
-
-            if (newBlock.prefab != null)
-            {
-                blocks.TryAdd(newBlock.prefab.tag, newBlock);
-            }
-            else
-            {
-                Debug.LogError("Trying to unlock a block with NO PREFAB");
-            }
-
-            selectBlockButton.onClick.AddListener(() => HandleBlockSelect(newBlock));
-            buyBlockButton.onClick.AddListener(() => HandleBlockBuy(newBlock));
+            kill(child);
         }
     }                            
 ```
 
 ![It starts with](half-life2-linkin-park.gif)
-![Boom boom boom](Boomboompow.mp4)
