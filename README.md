@@ -25,33 +25,44 @@
 
 #### Codeblock
 
-...
-    public int Health 
-    { 
-        get
+```
+    void HandleUpgradeClick(Upgrade upgrade, GameObject upgradeObject)
+    {
+        if (upgrade.cost <= points && !upgrade.unlocked)
         {
-            return health;
-        }
-        set
-        {
-            damageTaken += value;
-            health = value;
-            foreach(Action<int> action in damageActions)
+            upgrade.unlocked = true;
+            points -= upgrade.cost;
+            var image = upgradeObject.GetComponent<Image>();
+            image.color = green;
+            totalScoreTMP.text = $"Total Score: {points}";
+            GameObject blockBuildUI = Instantiate(blockUIPrefab, blockList.transform);
+            image = blockBuildUI.GetComponent<Image>();
+            image.color = upgrade.color;
+            Button[] blockButtons = blockBuildUI.GetComponentsInChildren<Button>();
+            TextMeshProUGUI[] blockTexts = blockBuildUI.GetComponentsInChildren<TextMeshProUGUI>();
+            Button selectBlockButton = blockButtons[0];
+            Button buyBlockButton = blockButtons[1];
+            Block newBlock = new()
             {
-                action(value);
-            }
-            if (health <= 0)
-            {
-                int particles = 5 + Mathf.FloorToInt(rb.velocity.magnitude) * 2;
-                float lerpMultiplier = Mathf.LerpUnclamped(0f, 1f, rb.velocity.magnitude / magnitudeUpperLimit);
-                deathFX.Play(this, particles, lerpMultiplier);
-                foreach (Action action in deathActions)
-                {
-                    action();
-                }
+                name = upgrade.name,
+                prefab = upgrade.prefab,
+                ownedText = blockTexts[0],
+                costText = blockTexts[1],
+                Cost = upgrade.cost,
+                Owned = 0
+            };
 
-                Reset();
+            if (newBlock.prefab != null)
+            {
+                blocks.TryAdd(newBlock.prefab.tag, newBlock);
             }
+            else
+            {
+                Debug.LogError("Trying to unlock a block with NO PREFAB");
+            }
+
+            selectBlockButton.onClick.AddListener(() => HandleBlockSelect(newBlock));
+            buyBlockButton.onClick.AddListener(() => HandleBlockBuy(newBlock));
         }
-    }
-...
+    }                            
+```
